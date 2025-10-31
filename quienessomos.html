@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiénes somos | DINMAC</title>
+  <link rel="stylesheet" href="style/quienes.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><img src="imagenes/logo.png" alt="Logo"></a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">Inicio</a></li>
+          <li><a class="nav__link active" href="galeria.html">Quiénes somos</a></li>
+          <li><a class="nav__link" href="producto.html">Galería</a></li>
+          <li><a class="nav__link" href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h1>Quiénes somos</h1>
+    <p>Somos un equipo comprometido con la calidad y la atención personalizada.</p>
+    <section class="grid">
+      <article class="card">
+        <h2>Misión</h2>
+        <p>Nuestra misión es brindar soluciones confiables y accesibles.</p>
+      </article>
+      <article class="card">
+        <h2>Visión</h2>
+        <p>Ser referentes en servicio y experiencia del cliente.</p>
+      </article>
+      <article class="card">
+        <h2>Valores</h2>
+        <ul>
+          <li>Transparencia</li>
+          <li>Innovación</li>
+          <li>Responsabilidad</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© <span id="year"></span> DINMAC. Todos los derechos reservados.</p>
+      <nav aria-label="Secundario">
+        <a href="contacto.html">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

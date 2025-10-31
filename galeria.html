@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Galería | Mi Sitio</title>
+  <link rel="stylesheet" href="/style/galeria.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="/index.html"><img src="img/logo.svg" alt="Logo" /></a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="/index.html">Inicio</a></li>
+          <li><a class="nav__link" href="/quienessomos.html">Quiénes somos</a></li>
+          <li><a class="nav__link" href="/producto.html">Producto</a></li>
+          <li><a class="nav__link active" href="/galeria.html">Galería</a></li>
+          <li><a class="nav__link" href="/contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h1>Galería</h1>
+    <p>Algunas imágenes de proyectos y productos.</p>
+    <section class="gallery">
+      <figure class="gallery__item"><img src="img/banner1.jpg" alt="Imagen 1"><figcaption>Imagen 1</figcaption></figure>
+      <figure class="gallery__item"><img src="img/banner2.jpg" alt="Imagen 2"><figcaption>Imagen 2</figcaption></figure>
+      <figure class="gallery__item"><img src="img/banner1.jpg" alt="Imagen 3"><figcaption>Imagen 3</figcaption></figure>
+      <figure class="gallery__item"><img src="img/banner2.jpg" alt="Imagen 4"><figcaption>Imagen 4</figcaption></figure>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© <span id="year"></span> Mi Sitio. Todos los derechos reservados.</p>
+      <nav aria-label="Secundario">
+        <a href="quienessomos.html">Quiénes somos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+@import url("./style.css");
+/* Específico de contacto */
+.form{display:grid;gap:1rem;margin-top:1rem;background:var(--card);padding:1rem;border-radius:var(--radius);border:1px solid #24242a}
+.form__row{display:grid;gap:.35rem}
+label{font-weight:600}
+input,textarea{background:#11131a;color:var(--txt);border:1px solid #24242a;border-radius:10px;padding:.75rem;outline:none}
+input:focus,textarea:focus{border-color:var(--brand)}

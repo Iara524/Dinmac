@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contacto | Mi Sitio</title>
+  <link rel="stylesheet" href="style/contacto.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><img src="imagenes/logo.png" alt="Logo" /></a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">Inicio</a></li>
+          <li><a class="nav__link" href="quienessomos.html">Quiénes somos</a></li>
+          <li><a class="nav__link" href="producto.html">Producto</a></li>
+          <li><a class="nav__link" href="galeria.html">Galería</a></li>
+          <li><a class="nav__link active" href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h1>Contacto</h1>
+    <p>Completá el formulario y te respondemos a la brevedad.</p>
+
+    <form class="form" action="#" method="post" autocomplete="on">
+      <div class="form__row">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" type="text" required />
+      </div>
+      <div class="form__row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+      </div>
+      <div class="form__row">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
+      </div>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© <span id="year"></span> Mi Sitio. Todos los derechos reservados.</p>
+      <nav aria-label="Secundario">
+        <a href="quienessomos.html">Quiénes somos</a>
+        <a href="contacto.html" aria-current="page">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

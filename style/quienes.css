@@ -1,0 +1,5 @@
+@import url("./style.css");
+/* Ajustes específicos de la página */
+.main{padding:2rem 0}
+.grid{display:grid;gap:1rem}
+.card{background:var(--card);padding:1rem;border-radius:var(--radius);border:1px solid #24242a}

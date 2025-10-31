@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Productos</title>
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --card:#111214;
+      --text:#f4f5f6;
+      --muted:#b7bcc3;
+      --accent:#e6b400;
+      --ring:#2a2d33;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:linear-gradient(180deg,#0b0b0c 0%, #17181b 100%);
+      color:var(--text);
+    }
+    
+    .container{
+      max-width:1200px; margin:0 auto; padding:32px 20px 64px;
+    }
+    header{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:24px;
+      border-bottom:1px solid var(--ring); padding-bottom:12px;
+    }
+    header h1{font-size:clamp(24px, 3.5vw, 38px); letter-spacing:.5px; margin:0}
+    header p{color:var(--muted); margin:0}
+
+    /* grid */
+    .products-grid{
+      display:grid;
+      gap:22px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    @media (max-width: 1200px){ 
+      /* 8 columnas -> cada card ocupa 4 para que entre exacto 2 por fila */
+      .products-grid{grid-template-columns: repeat(8,1fr);} 
+      .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);}
+    } 
+    @media (max-width: 840px){ 
+      /* 6 columnas -> cada card ocupa 3 => 2 por fila */
+      .products-grid{grid-template-columns: repeat(6,1fr);} 
+      .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);}
+    } 
+        @media (max-width: 680px){ 
+      /* 2 columnas -> cada card ocupa 2 => 1 por fila */
+      .products-grid{grid-template-columns: repeat(2,1fr);} 
+      .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);}
+    }
+
+    .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);
+    }
+    @media (max-width: 840px){ .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);} }
+    @media (max-width: 680px){ .product-card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:18px;
+      overflow:hidden;
+      transition:.25s ease transform, .25s ease box-shadow;
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);} }
+
+    .product-media{ position:relative; aspect-ratio: 3/4; background:#0f1012; overflow:hidden; }
+    .product-media img{
+      width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.02);
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
+    .product-media:hover img{ transform: scale(1.1); box-shadow:0 20px 40px rgba(0,0,0,.5); z-index:3; }
+    .product-card:hover .product-media img{ transform: scale(1.02); }
+
+    /* Badges */
+    .badge{
+      position:absolute; top:14px; left:14px; z-index:2;
+      background:#14161a; color:#fff; border:1px dashed #2f333a; 
+      padding:6px 10px; border-radius:999px; font-size:12px; letter-spacing:.4px;
+    }
+    .badge[data-type="nuevo"]{ border-color:#3a7d3a; color:#b5f5b5; }
+    .badge[data-type="off"]{ left:auto; right:14px; border-color:#7d3a3a; color:#ffb5b5; }
+
+    .product-body{ padding:16px 16px 18px; display:flex; flex-direction:column; gap:10px; }
+    .title{ font-size: clamp(14px, 1.6vw, 18px); font-weight:600; text-transform:uppercase; line-height:1.3; }
+    .subtitle{ color:var(--muted); font-size:14px; line-height:1.4; }
+
+    .cta{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 14px; border-radius:999px; border:1px solid var(--ring);
+      text-decoration:none; color:var(--text); font-weight:600; letter-spacing:.3px;
+      background:transparent; transition:.25s ease background, .25s ease border-color, .25s ease transform;
+    }
+    .cta:hover{ background:#14161a; border-color:#3b4048; transform:translateY(-1px); }
+    .cta:active{ transform:translateY(0); }
+
+    .product-card:focus-within{ outline:2px solid var(--accent); outline-offset:2px; }
+
+    /* helper for full-card click */
+    .stretched-link{ position:absolute; inset:0; z-index:1; }
+    /* --- Lightbox Elite styles --- */
+    .lb{ position:fixed; inset:0; display:grid; place-items:center; z-index:1000; }
+    .lb[aria-hidden="true"]{ display:none; }
+    .lb-backdrop{ position:absolute; inset:0; background:rgba(10,10,12,.72); backdrop-filter: blur(6px); }
+    .lb-frame{ position:relative; width:min(92vw,1100px); max-height:88vh; margin:0; }
+    .lb-img{ width:100%; height:100%; object-fit:contain; border-radius:16px; box-shadow:0 30px 60px rgba(0,0,0,.6); }
+    .lb-cap{ text-align:center; color:var(--muted); margin-top:10px; font-size:14px; }
+    .lb-close{ position:absolute; top:-12px; right:-12px; width:40px; height:40px; border-radius:999px; border:1px solid var(--ring); background:#14161a; color:#fff; cursor:pointer; }
+    .lb-nav{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:999px; border:1px solid var(--ring); background:#14161a; color:#fff; cursor:pointer; }
+    .lb-prev{ left:-12px; }
+    .lb-next{ right:-12px; }
+
+    /* Ajustes para que el zoom en la card no "empuje" el layout */
+    .product-card{ position:relative; display:flex; flex-direction:column; }
+    .product-media{ position:relative; aspect-ratio:3/4; overflow:hidden; }
+    .product-media img{ will-change: transform; }
+
+    /* el link estirado no debe tapar la imagen (la imagen abre lightbox) */
+    .stretched-link{ pointer-events:none; }
+
+.logo img{height:60px}
+.header__inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+.nav__list{display:flex;gap:1rem;list-style:none;margin:0;padding:0}
+.nav__link{padding:.6rem .9rem;border-radius:999px;transition:.2s background}
+.nav__link:hover{background:#e9e9ef}
+.nav__link.active{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff}
+
+  </style>
+  <div class="container header__inner">
+      <a class="logo" href="index.html"><img src="imagenes/logo.png" alt="Logo" /></a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">Inicio</a></li>
+          <li><a class="nav__link" href="quienessomos.html">Quiénes somos</a></li>
+          <li><a class="nav__link" href="productos.html">Producto</a></li>
+          <li><a class="nav__link active" href="galeria.html">Galería</a></li>
+          <li><a class="nav__link" href="contacto.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Todos los productos</h1>
+      <!-- <p> <strong>Saber más</strong> </p> -->
+    </header>
+
+    <section class="products-grid" aria-label="Listado de productos">
+      <!-- Producto 1 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/ALTO.AVANCE7792.png" alt="breve detalle" />
+          <a class="stretched-link" href="detalle.html?slug=calza-oxford-gastada" aria-label="Ver detalle"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">ALTO AVANCE 7792</div>
+          <div class="subtitle">Descripcion breve del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-oxford-gastada" title="Ver más de Calza Oxford Gastada">Saber más</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Producto 2 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="off" aria-label="Promoción">En stock</span>
+          <img src="imagenes/DRILL-FIX-PRO.png" alt="Jean Cheeta Flare con estampado animal, en galpón" />
+          <a class="stretched-link" href="detalle.html?slug=jean-cheeta-flare" aria-label="Ver detalle de Jean Cheeta Flare"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">DRILL FIX PRO</div>
+          <div class="subtitle">Descripcion breve del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=jean-cheeta-flare">Saber más</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Producto 3 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/GOPROMILL.png" alt="Jean Animal Blue con blazer, en estacionamiento" />
+          <a class="stretched-link" href="detalle.html?slug=jean-animal-blue" aria-label="Ver detalle de Jean Animal Blue"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">GOPROMILL</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=jean-animal-blue">En stock</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Producto 4 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/INSERTO-RANURADO.jpg" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">Inserto granulado</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>
+      </article>
+<!-- Producto 5  -->
+ 
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/INSERTO-DODEKA.png" alt="Descripcion" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">INSERTO-DODEKA</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>
+      </article>
+    
+ <!-- Producto 6 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/VSM11.png" alt="Descripcion producto breve" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">VSM11</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>
+      </article>  
+  <!-- Producto 7 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/LAMA.png" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">LAMA</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>      
+      </article> 
+   <!-- Producto 8 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/INSERTO-TOPNOTCH.PNG" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">INSERTO-TOPNOTCH</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div> 
+        </article>   
+     <!-- Producto 9 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/VSM490.jpg" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">VSM490</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>   
+      </article>   
+     <!-- Producto 10 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/VSM11-INSERTO.png" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">VSM11-INSERTO</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>
+      </article>    
+     <!-- Producto 11 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/KENTIP.png" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">KENTIP</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>   
+      </article> 
+    <!-- Producto 12 -->
+      <article class="product-card">
+        <div class="product-media">
+          <span class="badge" data-type="nuevo" aria-label="Nuevo">En stock</span>
+          <img src="imagenes/INSERTO-KENTIP.png" alt="Calza Flow negra de entrenamiento, en interior" />
+          <a class="stretched-link" href="detalle.html?slug=calza-flow-negra" aria-label="Ver detalle de Calza Flow Negra"></a>
+        </div>
+        <div class="product-body">
+          <div class="title">KENTIP-INSERTO</div>
+          <div class="subtitle">Descripcion detallada del producto.</div>
+          <div>
+            <a class="cta" href="detalle.html?slug=calza-flow-negra">Saber más</a>
+          </div>
+        </div>          
+      </article>         
+    </section>
+  </div>
+
+  <!-- Lightbox Elite -->
+  <div id="lb" class="lb" aria-hidden="true" hidden>
+    <div class="lb-backdrop" data-lb-close></div>
+    <figure class="lb-frame" role="dialog" aria-modal="true" aria-label="Vista ampliada de producto">
+      <button class="lb-close" type="button" aria-label="Cerrar" data-lb-close>×</button>
+      <button class="lb-nav lb-prev" type="button" aria-label="Anterior" data-lb-prev>❮</button>
+      <img class="lb-img" alt="Imagen ampliada" />
+      <figcaption class="lb-cap"></figcaption>
+      <button class="lb-nav lb-next" type="button" aria-label="Siguiente" data-lb-next>❯</button>
+    </figure>
+  </div>
+
+  <script>
+    // --- Lightbox Elite ---
+    (function(){
+      const mediaNodes = Array.from(document.querySelectorAll('.product-media img'));
+
+      // Evita que el link "stretched" capture el click en la imagen
+      document.querySelectorAll('.product-media .stretched-link')
+        .forEach(a => a.style.pointerEvents = 'none');
+
+      const lb = document.getElementById('lb');
+      const img = lb.querySelector('.lb-img');
+      const cap = lb.querySelector('.lb-cap');
+      const btnClose = lb.querySelector('[data-lb-close]');
+      const btnPrev = lb.querySelector('[data-lb-prev]');
+      const btnNext = lb.querySelector('[data-lb-next]');
+
+      const items = mediaNodes.map(n => ({src:n.currentSrc || n.src, alt:n.alt}));
+      let idx = 0;
+      let lastFocus = null;
+
+      function open(i){
+        idx = (i+items.length)%items.length;
+        const it = items[idx];
+        img.src = it.src; img.alt = it.alt; cap.textContent = it.alt || '';
+        lb.hidden = false; lb.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        lastFocus = document.activeElement; btnClose.focus();
+      }
+      function close(){
+        lb.hidden = true; lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        if(lastFocus){ lastFocus.focus(); }
+      }
+      function prev(){ open(idx-1); }
+      function next(){ open(idx+1); }
+
+      mediaNodes.forEach((n,i)=>{
+        n.style.cursor = 'zoom-in';
+        n.addEventListener('click', (e)=>{ e.preventDefault(); open(i); });
+      });
+
+      btnClose.addEventListener('click', close);
+      btnPrev.addEventListener('click', prev);
+      btnNext.addEventListener('click', next);
+      lb.addEventListener('click', (e)=>{ if(e.target.hasAttribute('data-lb-close')) close(); });
+      window.addEventListener('keydown', (e)=>{
+        if(lb.hidden) return;
+        if(e.key==='Escape') close();
+        if(e.key==='ArrowLeft') prev();
+        if(e.key==='ArrowRight') next();
+      });
+
+      // Swipe básico en mobile
+      let sx=0, sy=0;
+      lb.addEventListener('touchstart', (e)=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; }, {passive:true});
+      lb.addEventListener('touchend', (e)=>{
+        const t=e.changedTouches[0]; const dx=t.clientX-sx; const dy=t.clientY-sy;
+        if(Math.abs(dx)>40 && Math.abs(dy)<60){ dx>0 ? prev() : next(); }
+      });
+    })();
+  </script>
+</body>
+ <!-- Footer (en todas las páginas) -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© <span id="year"></span> Mi Sitio. Todos los derechos reservados.</p>
+      <nav aria-label="Secundario">
+        <a href="quienessomos.html">Quiénes somos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="javascript/app.js"></script>
+  <script>
+    // año dinámico del footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>
+
