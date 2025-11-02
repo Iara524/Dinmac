@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menú de Productos Informativo</title>
+  <style>
+    :root{
+      --bg:#fafafa; --text:#222; --muted:#666; --card:#fff; --border:#ddd; --brand:#0d6efd; --brand-2:#0b5ed7;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; padding:24px; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text);}
+    h1{margin:0 0 16px; text-align:center}
+
+    /* Barra superior */
+    .topbar{display:grid; gap:12px; grid-template-columns:1fr; max-width:1100px; margin:0 auto 16px;}
+    .menu{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+    .categoria{padding:10px 14px; border-radius:999px; background:#f1f1f1; cursor:pointer; border:1px solid transparent; transition:all .2s; user-select:none; font-weight:600}
+    .categoria:hover{background:#e8e8e8}
+    .categoria.activa{background:var(--brand); color:#fff;}
+    .filters{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+    .filters input, .filters select{padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:15px; outline:none; min-width:240px}
+
+    /* Grid de cards */
+    .grid{max-width:1100px; margin:20px auto 0; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px;}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:0 2px 8px rgba(0,0,0,.05); transition:transform .18s ease;}
+    .card:hover{transform:translateY(-2px)}
+    .card .thumb{width:100%; height:150px; object-fit:cover; border-radius:10px; cursor:zoom-in}
+    .card h3{margin:10px 0 4px; font-size:18px}
+    .meta{margin:4px 0 10px; color:var(--muted); font-size:13px}
+    .btns{display:flex; gap:8px}
+    .btn{flex:1; padding:10px 12px; border:1px solid var(--border); background:#f7f7f7; border-radius:10px; cursor:pointer; font-weight:600}
+    .btn.primary{background:var(--brand); color:#fff; border-color:transparent}
+    .btn.primary:hover{background:var(--brand-2)}
+    .btn:hover{filter:brightness(.98)}
+
+    .empty{grid-column:1/-1; text-align:center; color:var(--muted); padding:30px 10px; border:1px dashed var(--border); border-radius:12px; background:#fff;}
+
+    /* Vista detalle */
+    .detalle{max-width:1000px; margin:10px auto 0; display:none}
+    .detalle.visible{display:block}
+    .detalle .wrap{display:grid; grid-template-columns:1fr; gap:16px}
+    .detalle .hero{width:100%; max-height:420px; object-fit:cover; border-radius:12px; cursor:zoom-in}
+    .detalle .title{margin:0}
+    .detalle .data{color:var(--muted)}
+    .actions{margin:12px 0 0; display:flex; gap:10px}
+    .back{padding:10px 14px; background:#ececec; border:1px solid var(--border); border-radius:10px; cursor:pointer; font-weight:600}
+    .back:hover{filter:brightness(.98)}
+    @media(min-width:860px){ .detalle .wrap{grid-template-columns:1.3fr 1fr} }
+
+    /* Lightbox + zoom */
+    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; z-index:9999}
+    .lightbox.visible{display:flex}
+    .lb-toolbar{position:fixed; top:16px; right:16px; display:flex; gap:8px}
+    .lb-btn{padding:10px 12px; border:none; border-radius:10px; background:#ffffff; cursor:pointer; font-weight:700}
+    .lb-canvas{position:relative; width:90vw; height:90vh; overflow:hidden; touch-action:none}
+    .lb-img{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(1); max-width:none; width:auto; height:auto; max-height:90vh}
+    .lb-close{position:fixed; top:16px; left:16px}
+  </style>
+</head>
+<body>
+  <h1>Menú de Productos</h1>
+
+  <!-- Controles -->
+  <section class="topbar">
+    <div class="menu" id="categorias"></div>
+    <div class="filters">
+      <input id="buscador" type="search" placeholder="Buscar productos por nombre…">
+      <select id="orden">
+        <option value="az">Ordenar por nombre (A–Z)</option>
+        <option value="za">Ordenar por nombre (Z–A)</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Listado -->
+  <section id="listado" class="grid"></section>
+
+  <!-- Detalle -->
+  <section id="detalle" class="detalle">
+    <button class="back" id="volverListado">← Volver al listado</button>
+    <div class="wrap">
+      <img id="detalleImg" class="hero" alt="Imagen del producto">
+      <div>
+        <h2 id="detalleTitulo" class="title"></h2>
+        <p id="detalleCategoria" class="data"></p>
+        <p id="detalleDescripcion"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox / Zoom -->
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog">
+    <button class="lb-btn lb-close" id="lbClose">✕ Cerrar</button>
+    <div class="lb-toolbar">
+      <button class="lb-btn" id="lbMinus">−</button>
+      <button class="lb-btn" id="lbReset">100%</button>
+      <button class="lb-btn" id="lbPlus">+</button>
+    </div>
+    <div class="lb-canvas" id="lbCanvas">
+      <img id="lbImg" class="lb-img" alt="Zoom imagen">
+    </div>
+  </div>
+
+  <script>
+    /* ================== Datos ================== */
+    
+    const datos = {
+      "Ranurado": [
+        { id: "1" , nombre: "Inserto Lama", imagen: "imagenes/ranurado/INSERTO-LAMA.jpg" },
+        { id: "2" , nombre: "Inserto-Ranurado", imagen: "imagenes/ranurado/INSERTO-RANURADO.jpg" },
+        { id: "3" , nombre: "Inserto-TOPNOTCH", imagen: "imagenes/ranurado/INSERTO-TOPNOTCH.PNG" }
+      ],
+      "Perforado": [
+        {id: "4",  nombre: "DRILL-FIX-PRO", imagen: "imagenes/perforados/DRILL-FIX-PRO.png" },
+        {id: "5",  nombre: "INSERTO-KENTIP", imagen: "imagenes/perforados/INSERTO-KENTIP.png" },
+        {id: "6" , nombre: "KENTIP", imagen: "imagenes/perforados/KENTIP.png" }
+      ],
+      "Fresado": [
+        {id:"7" , nombre: "ALTO AVANCE 7792", imagen: "imagenes/fresado/ALTO.AVANCE7792.png" },
+        {id:"8" , nombre: "ALTO AVANCE VXF", imagen: "imagenes/fresado/ALTOAVANCEVXF.jpg" },
+        {id:"9" , nombre: "DODEKA", imagen: "imagenes/fresado/DODEKA.jpg" },
+        {id:"10" , nombre: "INSERTO 7792", imagen: "imagenes/fresado/INSERTO-7792.png" },
+        {id:"11" , nombre: "INSERTO-DODEKA", imagen: "imagenes/fresado/INSERTO-DODEKA.png" },
+        {id:"12" , nombre: "INSERTO-M1200", imagen: "imagenes/fresado/INSERTO-M1200.jpg" },
+        {id:"13" , nombre: "INSERTO-VSM490", imagen: "imagenes/fresado/INSERTO-VSM490.jpg" },
+        {id:"14" , nombre: "INSERTO-VSM890", imagen: "imagenes/fresado/INSERTO-VSM890.jpg" },
+        {id:"15" , nombre: "INSERTO-VXF", imagen: "imagenes/fresado/INSERTO-VXF.jpg" },
+        {id:"16" , nombre: "M1200", imagen: "imagenes/fresado/M1200.png" },
+        {id:"17" , nombre: "MILL1-10-INSERTO", imagen: "imagenes/fresado/MILL1-10-INSERTO.png" },
+        {id:"18" , nombre: "MILL1-10FRESA", imagen: "imagenes/fresado/MILL1-10FRESA.png" },
+        {id:"19" , nombre: "VSM11-INSERTO", imagen: "imagenes/fresado/VSM11-INSERTO.png" },
+        {id:"20" , nombre: "VSM490", imagen: "imagenes/fresado/VSM490.jpg" },
+        {id:"21", nombre: "VSM890", imagen: "imagenes/fresado/VSM890.jpg" }
+      ],
+        "Machos": [
+        {id: "" , nombre: "", imagen: "imagenes/machos/MACHOS-ROSCA.PNG" }
+      ]
+    };
+
+    
+
+    /* ================== Estado & refs ================== */
+    const categorias = ["Todos", ...Object.keys(datos)];
+    const $categorias = document.getElementById("categorias");
+    const $buscador = document.getElementById("buscador");
+    const $orden = document.getElementById("orden");
+    const $listado = document.getElementById("listado");
+
+    const $detalle = document.getElementById("detalle");
+    const $volverListado = document.getElementById("volverListado");
+    const $detalleImg = document.getElementById("detalleImg");
+    const $detalleTitulo = document.getElementById("detalleTitulo");
+    const $detalleCategoria = document.getElementById("detalleCategoria");
+    const $detalleDescripcion = document.getElementById("detalleDescripcion");
+
+    const $lightbox = document.getElementById("lightbox");
+    const $lbImg = document.getElementById("lbImg");
+    const $lbPlus = document.getElementById("lbPlus");
+    const $lbMinus = document.getElementById("lbMinus");
+    const $lbReset = document.getElementById("lbReset");
+    const $lbClose = document.getElementById("lbClose");
+    const $lbCanvas = document.getElementById("lbCanvas");
+
+    let categoriaActiva = "Todos";
+    let listaTodos = Object.entries(datos).flatMap(([cat, arr]) => arr.map(p => ({...p, categoria:cat})));
+    let ultimoScroll = 0; // para volver al mismo lugar al cerrar detalle
+
+    /* ================== UI: Categorías ================== */
+    function renderCategorias(){
+      $categorias.innerHTML = "";
+      categorias.forEach(cat=>{
+        const btn = document.createElement("button");
+        btn.className = "categoria" + (cat===categoriaActiva ? " activa":"");
+        btn.textContent = cat;
+        btn.onclick = () => { categoriaActiva = cat; renderCategorias(); renderListado(); };
+        $categorias.appendChild(btn);
+      });
+    }
+
+    /* ================== Filtros ================== */
+    const normalizar = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    function getFuente(){
+      if(categoriaActiva==="Todos") return [...listaTodos];
+      return datos[categoriaActiva].map(p=>({...p, categoria:categoriaActiva}));
+    }
+    function aplicarFiltros(items){
+      const q = normalizar($buscador.value.trim());
+      if(q) items = items.filter(p => normalizar(p.nombre).includes(q));
+      items.sort((a,b)=> $orden.value==="az" ? a.nombre.localeCompare(b.nombre) : b.nombre.localeCompare(a.nombre));
+      return items;
+    }
+
+    /* ================== Listado (cards) ================== */
+    function renderListado(){
+      $detalle.classList.remove("visible");
+      $listado.style.display = "grid";
+      const fuente = aplicarFiltros(getFuente());
+
+      $listado.innerHTML = "";
+      if(fuente.length===0){
+        const div = document.createElement("div");
+        div.className="empty";
+        div.textContent = "No se encontraron productos para los filtros actuales.";
+        $listado.appendChild(div);
+        return;
+      }
+
+      fuente.forEach(prod=>{
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <img class="thumb" src="${prod.imagen}" alt="${prod.nombre}" data-zoom>
+          <h3>${prod.nombre}</h3>
+          <p class="meta">Categoría: ${prod.categoria}</p>
+          <div class="btns">
+            <button class="btn" data-zoom-btn>Zoom</button>
+            <button class="btn primary" data-detalle>Detalle</button>
+          </div>
+        `;
+        // Zoom al click de la imagen o botón
+        card.querySelector("[data-zoom]").addEventListener("click", ()=> abrirLightbox(prod.imagen, prod.nombre));
+        card.querySelector("[data-zoom-btn]").addEventListener("click", ()=> abrirLightbox(prod.imagen, prod.nombre));
+        // Detalle
+        card.querySelector("[data-detalle]").addEventListener("click", ()=> irADetalle(prod.id));
+        $listado.appendChild(card);
+      });
+    }
+
+    /* ================== Detalle ================== */
+    function irADetalle(id){
+      // guardar posición de scroll para volver al listado
+      ultimoScroll = window.scrollY || 0;
+
+      const prod = listaTodos.find(p=>p.id===id);
+      if(!prod) return;
+      $detalleImg.src = prod.imagen;
+      $detalleImg.alt = prod.nombre;
+      $detalleTitulo.textContent = prod.nombre;
+      $detalleCategoria.textContent = `Categoría: ${prod.categoria}`;
+      $detalleDescripcion.textContent = prod.desc || "Producto informativo.";
+      $listado.style.display = "none";
+      $detalle.classList.add("visible");
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    $detalleImg.addEventListener("click", ()=> abrirLightbox($detalleImg.src, $detalleTitulo.textContent));
+    $volverListado.addEventListener("click", ()=>{
+      $detalle.classList.remove("visible");
+      $listado.style.display = "grid";
+      window.scrollTo(0, ultimoScroll);
+    });
+
+    /* ================== Lightbox + Zoom ================== */
+    let scale = 1, pos = {x:0, y:0}, dragging = false, start = {x:0, y:0}, origin = {x:0, y:0};
+
+    function abrirLightbox(src, alt){
+      $lbImg.src = src;
+      $lbImg.alt = alt || "";
+      resetZoom();
+      $lightbox.classList.add("visible");
+    }
+    function cerrarLightbox(){
+      $lightbox.classList.remove("visible");
+    }
+    function resetZoom(){
+      scale = 1; pos = {x:0, y:0}; origin = {x:0, y:0};
+      applyTransform();
+    }
+    function applyTransform(){
+      $lbImg.style.transform = `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px)) scale(${scale})`;
+    }
+    function zoom(delta){
+      scale = Math.min(6, Math.max(0.5, +(scale + delta).toFixed(2)));
+      applyTransform();
+    }
+
+    // Controles
+    $lbPlus.addEventListener("click", ()=> zoom(+0.2));
+    $lbMinus.addEventListener("click", ()=> zoom(-0.2));
+    $lbReset.addEventListener("click", resetZoom);
+    $lbClose.addEventListener("click", cerrarLightbox);
+    $lightbox.addEventListener("click", (e)=>{ if(e.target===$lightbox) cerrarLightbox(); });
+
+    // Drag para mover la imagen cuando hay zoom
+    function pointerDown(e){
+      dragging = true;
+      const p = getPoint(e);
+      start = {x:p.x, y:p.y};
+      e.preventDefault();
+    }
+    function pointerMove(e){
+      if(!dragging) return;
+      const p = getPoint(e);
+      pos.x += (p.x - start.x);
+      pos.y += (p.y - start.y);
+      start = p;
+      applyTransform();
+    }
+    function pointerUp(){ dragging = false; }
+
+    function getPoint(e){
+      if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
+      return {x:e.clientX, y:e.clientY};
+    }
+
+    $lbCanvas.addEventListener("mousedown", pointerDown);
+    window.addEventListener("mousemove", pointerMove);
+    window.addEventListener("mouseup", pointerUp);
+
+    $lbCanvas.addEventListener("touchstart", pointerDown, {passive:false});
+    window.addEventListener("touchmove", pointerMove, {passive:false});
+    window.addEventListener("touchend", pointerUp);
+
+    // Zoom con rueda del mouse
+    $lbCanvas.addEventListener("wheel", (e)=>{
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? +0.2 : -0.2;
+      zoom(delta);
+    }, {passive:false});
+
+    // Esc para cerrar
+    window.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && $lightbox.classList.contains("visible")) cerrarLightbox(); });
+
+    /* ================== Eventos filtros ================== */
+    const debounce = (fn, d=200)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), d); }; };
+    $buscador.addEventListener("input", debounce(renderListado, 200));
+    $orden.addEventListener("change", renderListado);
+
+    /* ================== Init ================== */
+    renderCategorias();
+    renderListado();
+  </script>
+</body>
+</html>
