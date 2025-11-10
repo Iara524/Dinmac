@@ -1,13 +1,15 @@
 :root{
-  --bg:#e9e9ef;
+  --bg:#0b0c10;
+  --panel:#151820;
   --card:#17171b;
   --txt:#e9e9ef;
-  --muted:#e9e9ef;
+  --muted:#c9c9d2;
   --brand:#4f46e5;
   --brand-2:#0ea5e9;
   --radius:16px;
   --container:1200px;
 }
+
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";line-height:1.5}
 img{max-width:100%;display:block}
@@ -22,99 +24,247 @@ a{color:inherit;text-decoration:none}
 .nav__link:hover{background:#e9e9ef}
 .nav__link.active{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff}
 
-.banner{min-height:52vh;display:grid;align-items:center;border-radius:var(--radius);overflow:hidden;margin:1rem 0;position:relative}
-.banner--one{background:linear-gradient( to bottom right, rgba(79,70,229,.25), rgba(14,150,210,.15) ), url("../imagenes/banner2.jpg") center/cover no-repeat}
-.banner--two{background:linear-gradient( to bottom right, rgba(14,165,233,.25), rgba(79,70,229,.15) ), url("../imagenes/banner.jpg") center/cover no-repeat}
-.banner__content{padding:3rem;max-width:700px}
-h1,h2,h3{margin:0 0 .6rem}
-p{color:var(--muted);margin:0 0 1rem}
-.btn{display:inline-block;padding:.8rem 1.1rem;background:var(--brand);color:#fff;border-radius:12px;font-weight:600;transition:.2s transform}
-.btn:hover{transform:translateY(-1px)}
-.btn--alt{background:var(--brand-2)}
-
-.main{padding:2rem 0}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
-.card{background:var(--card);padding:1rem;border-radius:var(--radius);border:1px solid #24242a}
-
-.footer{margin-top:3rem;border-top:1px solid #222}
-.footer__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0}
-.footer a{color: #222;}
-.footer a:hover{color:#222}
-
-
-#whatsappIcon {
-  width: 60px;
-  height: auto;
-  cursor: pointer;
+/* ===== HEADER sticky con blur ===== */
+.header{
+  position: sticky; top:0; z-index: 100;
+  background: rgba(10,12,18,.65);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid #1f2430;
 }
+.header__inner{ display:flex; align-items:center; justify-content:space-between; padding:.8rem 0; }
+.logo__mark{ font-weight:900; letter-spacing:.5px; background:linear-gradient(90deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent; font-size:22px; }
+.nav__list{ display:flex; gap:.5rem; list-style:none; margin:0; padding:0; }
+.nav__link{ padding:.55rem .9rem; border-radius:999px; font-weight:600; color:#d7d7e0; }
+.nav__link:hover{ background:#232739; color:#fff; }
+.nav__link.active{ background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#fff; }
 
+/* ===== MAIN / LAYOUT ===== */
+body{ display:flex; flex-direction:column; min-height:100dvh; }
+.main{ flex:1 0 auto; padding:1rem 0 2rem; }
 
-.banner {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 400px;
-  perspective: 900px;
+/* ===== BANNERS ===== */
+.banner{
+  position:relative;
+  display:grid; place-items:center;
+  min-height: clamp(420px, 58vh, 760px);
+  margin: 1rem 0;
+  border-radius: var(--radius);
   overflow: hidden;
   color: #fff;
 }
 
-/* ===== Video de fondo ===== */
-.banner__video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* hace que el video llene el espacio */
-  z-index: -2;
-  filter: brightness(0.5) contrast(1.2);
-}
-
-/* Capa oscura encima del video (para mejorar contraste) */
-.banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: -1;
-}
-
-/* ===== Contenido ===== */
-.banner__content {
+.banner__content{
+  position: relative; z-index: 3;
   text-align: center;
-  transform-style: preserve-3d;
-  transition: transform 0.4s ease;
+  padding: clamp(1.5rem, 3vw, 3rem);
 }
-.banner h1 {
-  font: 900 64px/1 "Poppins", sans-serif;
+.banner__content h1,
+.banner__content h2{
+  margin:0 0 .6rem;
+  font-weight: 900;
+  font-size: clamp(28px, 6vw, 64px);
+  line-height: 1.05;
   text-transform: uppercase;
-  text-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-  transform: translateZ(50px);
+  text-shadow: 0 10px 25px rgba(0,0,0,.5);
 }
-.banner p {
-  font-size: 20px;
-  transform: translateZ(25px);
-  text-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+.banner__content p{
+  margin: 0 0 1rem;
+  font-size: clamp(16px, 2.1vw, 20px);
+  color: var(--txt);
+  text-shadow: 0 8px 20px rgba(0,0,0,.35);
 }
-.btn {
-  display: inline-block;
-  margin-top: 18px;
-  padding: 14px 28px;
-  background: linear-gradient(90deg, #009fff, #0078ff);
+.btn{
+  display:inline-block;
+  padding:.85rem 1.25rem;
   border-radius: 999px;
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  transform: translateZ(35px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color:#fff; font-weight:800;
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+  transition: transform .2s ease;
 }
-.btn:hover {
-  transform: translateZ(45px) scale(1.05);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.5);
+.btn:hover{ transform: translateY(-1px) scale(1.03); }
+
+/* --- Banner 1: 3D sólo en la imagen (tilt al hover) --- */
+.banner--one{ perspective: 1000px; background: none; }
+.banner--one::after{
+  content:""; position:absolute; inset:0; z-index:1;
+  background: url("/imagenes/banner1.jpg") 40% 45% / cover no-repeat;
+  transform: translateZ(0) scale(1.04);
+  transition: transform .5s ease;
+  will-change: transform;
+}
+.banner--one::before{
+  content:""; position:absolute; inset:0; z-index:2;
+  background: linear-gradient(to bottom right, rgba(79,70,229,.22), rgba(14,150,210,.12)), rgba(0,0,0,.25);
+}
+.banner--one:hover::after{
+  transform: rotateX(6deg) rotateY(-6deg) scale(1.06);
 }
 
-/* Hover con efecto 3D */
-.banner:hover .banner__content {
-  transform: rotateX(6deg) rotateY(-6deg);
+/* --- Banner 2: Contacto + WhatsApp centrado debajo del título --- */
+.banner--two{
+  background:
+    linear-gradient(to bottom right, rgba(14,165,233,.2), rgba(79,70,229,.12)),
+    url("/imagenes/banner2.jpg") center/cover no-repeat;
 }
+.banner__content--contacto{
+  display:grid; justify-items:center; row-gap: 12px;
+}
+/* WhatsApp más chico y proporcional */
+/* contenedor centrado */
+.banner--two .banner__content--contacto{
+  display: grid;
+  justify-items: center;
+  row-gap: 12px;
+}
+
+/* botón verde con el PNG adentro */
+.banner--two .banner__content--contacto a{
+  display: inline-grid;
+  place-items: center;
+  width: clamp(48px, 4.4vw, 72px);
+  aspect-ratio: 1;
+  border-radius: 20%;
+  background: #25D366;
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+  transition: transform .15s ease;
+}
+.banner--two .banner__content--contacto a:hover{
+  transform: translateY(-2px) scale(1.03);
+}
+.banner--two .banner__content--contacto a img{
+  width: 62%; height: auto; display: block;
+}
+
+/* En móviles, un pelín más grande para ser tocable */
+@media (max-width: 600px){
+  .banner--two .whatsapp{ width: 56px; }
+}
+/* --- Banner 3: imagen atenuada para legibilidad --- */
+.banner--three{ background:none; }
+.banner--three::after{
+  content:""; position:absolute; inset:0; z-index:1;
+  background: url("/imagenes/banner3.jpg") center/cover no-repeat;
+  filter: brightness(.62) contrast(1.05);
+}
+.banner--three::before{
+  content:""; position:absolute; inset:0; z-index:2;
+  background: linear-gradient(to bottom right, rgba(14,165,233,.18), rgba(79,70,229,.15));
+}
+
+/* ===== SECCIONES ===== */
+.products, .about{
+  background: var(--panel);
+  border: 1px solid #202634;
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+.products h2, .about h2{ margin: 0 0 .5rem; font-size: 1.6rem; }
+
+/* --- Footer negro SIN romper nada --- */
+footer.footer { 
+  background: #000 !important;      /* solo fondo */
+  border-top: 1px solid #222; 
+}
+footer.footer p,
+footer.footer a { 
+  color: #e9e9ef !important;        /* texto/enlaces claros */
+}
+footer.footer a:hover { 
+  color: #0ea5e9 !important;         /* o el color que prefieras */
+}
+
+footer.footer { position: relative; z-index: 1; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px){
+  .nav__list{ gap:.25rem; }
+  .nav__link{ padding:.5rem .7rem; font-size:.95rem; }
+  .banner{ min-height: 420px; }
+  .banner--one:hover::after{ transform: scale(1.05); } /* reducimos tilt en móvil */
+}
+@media (max-width: 560px){
+  .header__inner{ gap:.75rem; }
+  .logo__mark{ font-size:18px; }
+  .nav__link{ padding:.45rem .6rem; font-size:.9rem; }
+}
+
+
+/* ====== FIX HEADER ====== */
+.header{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,12,18,.65);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid #1f2430;
+}
+.header__inner{ display:flex; align-items:center; justify-content:space-between; padding:.8rem 0; }
+.nav__list{ display:flex; gap:.5rem; list-style:none; margin:0; padding:0; }
+.nav__link{ padding:.55rem .9rem; border-radius:999px; font-weight:600; color:#d7d7e0; }
+.nav__link:hover{ background:#232739; color:#fff; }
+.nav__link.active{ background:linear-gradient(90deg,#4f46e5,#0ea5e9); color:#fff; }
+
+/* ====== BASE NECESARIO ====== */
+.container{ width:min(100% - 2rem, 1200px); margin-inline:auto; }
+img{ max-width:100%; display:block; }
+.main{ flex: 1 0 auto; }
+
+/* ====== BANNERS (versión simple y estable) ====== */
+.banner{
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(380px, 58vh, 760px);
+  margin: 1rem 0;
+  border-radius: 16px;
+  overflow: hidden;
+  color: #fff;
+}
+.banner__content{ position: relative; z-index: 1; text-align:center; padding: clamp(1.5rem,3vw,3rem); }
+.banner h1, .banner h2{
+  margin:0 0 .6rem;
+  font-weight:900; font-size: clamp(28px,6vw,64px);
+  text-transform: uppercase;
+  text-shadow: 0 10px 25px rgba(0,0,0,.5);
+}
+.banner p{ margin:0 0 1rem; font-size: clamp(16px,2.1vw,20px); text-shadow:0 8px 20px rgba(0,0,0,.35); }
+.btn{
+  display:inline-block; padding:.85rem 1.25rem; border-radius:999px;
+  background:linear-gradient(90deg,#4f46e5,#0ea5e9); color:#fff; font-weight:800;
+  box-shadow:0 8px 18px rgba(0,0,0,.35); transition:transform .2s ease;
+}
+.btn:hover{ transform: translateY(-1px) scale(1.03); }
+
+/* — Imágenes de fondo (vuelven a verse) — */
+.banner--one{
+  background:
+    linear-gradient(to bottom right, rgba(79,70,229,.22), rgba(14,150,210,.12)),
+    url("../imagenes/banner2.jpg") 40% 45% / cover no-repeat;
+}
+.banner--two{
+  background:
+    linear-gradient(to bottom right, rgba(14,165,233,.2), rgba(79,70,229,.12)),
+    url("../imagenes/banner.jpg") center/cover no-repeat;
+}
+.banner--three{
+  background:
+    linear-gradient(to bottom right, rgba(14,165,233,.18), rgba(79,70,229,.15)),
+    url("../imagenes/Accud.jpg") center/cover no-repeat;
+  /* Atenuación para leer el texto */
+  filter: brightness(.68) contrast(1.05);
+}
+
+/* Evita que algún overlay tape el footer */
+.banner::before, .banner::after{ pointer-events:none; }
+footer.footer{ position: relative; z-index: 1; }
+
+/* ====== FOOTER NEGRO (mantén el que ya te funciona) ====== */
+footer.footer { 
+  background:#000 !important; 
+  border-top:1px solid #222; 
+}
+footer.footer p,
+footer.footer a { color:#e9e9ef !important; }
+footer.footer a:hover { color:#0ea5e9 !important; }

@@ -2,4 +2,24 @@
 /* Ajustes específicos de la página */
 .main{padding:2rem 0}
 .grid{display:grid;gap:1rem}
-.card{background:var(--card);padding:1rem;border-radius:var(--radius);border:1px solid #24242a}
+.card{background:var(--card);padding:1rem;border-radius:var(--radius);border:1px solid #131318}
+
+
+/* --- Banner 3: imagen atenuada para legibilidad --- */
+/* Banner adicional (por ejemplo, para otras páginas) */
+.banner--extra {
+  background:
+    linear-gradient(to bottom right, rgba(79,70,229,.22), rgba(14,150,210,.12)),
+    url("/imagenes/Service.png") center/cover no-repeat;
+  color: #fff;
+}
+
+/* Ajustes de texto dentro del banner */
+.banner--extra .banner__content h2 {
+  font-size: clamp(32px, 5vw, 56px);
+  text-shadow: 0 10px 25px rgba(0,0,0,.5);
+}
+.banner--extra .banner__content p {
+  font-size: clamp(16px, 2vw, 20px);
+  text-shadow: 0 8px 20px rgba(0,0,0,.4);
+}

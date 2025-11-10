@@ -2,24 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DINMAC</title>
-  <link rel="preload" href="imagenes/ALTO.AVANCE7792.png" as="image">
-  <link rel="preload" href="imagenes/DODEKA.png" as="image">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dinmac — Herramientas</title>
+  <meta name="description" content="Herramientas de corte, sujeción e instrumentos de medición. Calidad y soporte.">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
-  <!-- Cabecera -->
+  <!-- Header -->
   <header class="header">
     <div class="container header__inner">
-      <a class="logo" href="index.html" aria-label="Ir al inicio">
-        <img src="imagenes/logo.png" alt="Logo" />
+      <a href="#" class="logo" aria-label="Inicio">
+      <img src="imagenes/logo.png" alt="Logo" /></a>
       </a>
-      <nav class="nav" aria-label="Principal">
+
+      <nav class="nav" aria-label="principal">
         <ul class="nav__list">
-          <li><a class="nav__link active" href="index.html">Inicio</a></li>
+          <li><a class="nav__link active" href="#">Inicio</a></li>
           <li><a class="nav__link" href="quienessomos.html">Quiénes somos</a></li>
-          <li><a class="nav__link" href="producto.html">Producto</a></li>
+          <li><a class="nav__link" href="productos.html">Productos</a></li>
           <li><a class="nav__link" href="galeria.html">Galería</a></li>
           <li><a class="nav__link" href="contacto.html">Contacto</a></li>
         </ul>
@@ -27,43 +30,36 @@
     </div>
   </header>
 
-  <!-- Banner 1 -->
-  <section class="banner banner--one">
-    <div class="container banner__content">
-      <p>Calidad, confianza y un equipo a tu lado.</p>
-      <a class="btn" href="producto.html">Ver producto</a>
-    </div>
-  </section>
+  <!-- Contenido principal -->
+  <main class="main">
+    <div class="container">
 
-  <!-- Banner 2 -->
-  <section class="banner banner--two">
-    <div class="container banner__content">
-      <h2>Contactanos</h2>
-      <a href="https://wa.me/5491122334455?text=Hola%20quiero%20más%20información" target="_blank">
-    <img id="whatsappIcon" src="imagenes/wpp.png" alt="WhatsApp">
+      <!-- Banner 1: 3D en la imagen -->
+      <section class="banner banner--one" id="hero">
+        <div class="banner__content">
+          <a class="btn" href="productos.html">Ver productos</a>
+        </div>
+      </section>
+
+      <!-- Banner 2: Contacto + WhatsApp centrado -->
+      <section class="banner banner--two" id="contacto">
+        <div class="banner__content banner__content--contacto">
+          <h3>Contáctanos</h3>
+            <p>Calidad, confianza y un equipo a tu lado.</p>
+            <a href="https://wa.me/5491122334455?text=Hola%20quiero%20más%20información" target="_blank">
+    <img src="imagenes/wpp.png" alt="WhatsApp">
   </a>
-    </div>
+   </div>
   </section>
 
-  <!-- Contenido principal (opcional) -->
-  <main class="container main">
-    <section class="grid">
-      <article class="card">
-        <h3>Destacado 1</h3>
-        <p>Texto breve para destacar un beneficio o servicio clave.</p>
-      </article>
-      <article class="card">
-        <h3>Destacado 2</h3>
-        <p>Otro beneficio con una explicación corta y clara.</p>
-      </article>
-      <article class="card">
-        <h3>Destacado 3</h3>
-        <p>Algo más que quieras resaltar en tu home.</p>
-      </article>
-    </section>
-  </main>
-    
-  <!-- Footer (en todas las páginas) -->
+      <!-- Banner 3: imagen opacada -->
+      <section class="banner banner--three" id="galeria">
+        <div class="banner__content">
+          <p>También vendemos instrumentos de medición. No dudes en consultar.</p>
+        </div>
+      </section>
+
+ <!-- Footer (en todas las páginas) -->
   <footer class="footer">
     <div class="container footer__inner">
       <p>© <span id="year"></span> DINMAC. Todos los derechos reservados.</p>
@@ -79,5 +75,8 @@
     // año dinámico del footer
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
+
+
